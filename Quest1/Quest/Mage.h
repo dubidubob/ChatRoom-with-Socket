@@ -11,9 +11,9 @@ public:
 		std::cout << nameId << "이(가) 마법을 시전합니다!\n";
 	}
 
-	bool castSpell(Character& target, int damage, int logIdx, CharacterManager::LogData& outResult)
+	bool castSpell(Character& target, int damage, CharacterManager::LogData& outResult)
 	{
 		outResult.skill = SkillName::CastSpell;
-		return executeSkill(target, damage, logIdx, outResult);
+		return executeSkill(target, damage, outResult);
 	}
 };
