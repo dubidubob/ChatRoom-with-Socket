@@ -11,9 +11,9 @@ public:
 		std::cout << nameId << "이(가) 칼을 휘두릅니다!\n";
 	}
 
-	bool swingSword(Character& target, int damage, int logIdx, CharacterManager::LogData& outResult)
+	bool swingSword(Character& target, int damage, CharacterManager::LogData& outResult)
 	{
 		outResult.skill = SkillName::SwingSword;
-		return executeSkill(target, damage, logIdx, outResult);
+		return executeSkill(target, damage, outResult);
 	}
 };

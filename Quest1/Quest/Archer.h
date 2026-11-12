@@ -11,9 +11,9 @@ public:
 		std::cout << nameId << "이(가) 활을 쏩니다!\n";
 	}
 
-	bool shootArrow(Character& target, int damage, int logIdx, CharacterManager::LogData& outResult)
+	bool shootArrow(Character& target, int damage, CharacterManager::LogData& outResult)
 	{
 		outResult.skill = SkillName::ShootArrow;
-		return executeSkill(target, damage, logIdx, outResult);
+		return executeSkill(target, damage, outResult);
 	}
 };

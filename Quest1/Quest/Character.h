@@ -3,7 +3,6 @@
 #include <iostream>
 #include <mutex>
 
-#include "Vector.h"
 #include "CharacterManager.h" // Log Data 중앙화로 인해 CharacterManager를 알아야함.
 #include "Enums.h"
 
@@ -17,7 +16,6 @@ public:
 	int hp;
 	int damage;
 
-	Vector<int> LogIndex;
 	CharacterManager* characterManager;
 
 	virtual ~Character() {}
@@ -31,26 +29,13 @@ public:
 		bIsAlive(true),
 		characterManager(characterM)
 	{
-		// TODO: reserve index 하는 정도 수정, 
-		LogIndex.reserve(50);
 	}
 
 	void introduce() { std::cout << "저는 " << nameId << "입니다.\n"; }
 
 	bool isAlive() { return bIsAlive; }
 
-	void printLog()
-	{
-		// characterManager의 LogVector 받아서 출력
-		if (characterManager == nullptr) return;
-		std::cout << "[" << nameId << " 로그] : ";
-		for (int i = 0; i < LogIndex.size(); i++)
-		{
-			characterManager->printSingleLog(LogIndex[i]);
-		}
-	}
-
-	DamageResult takeDamage(int dmg, int logIdx)
+	DamageResult takeDamage(int dmg)
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
 
@@ -70,17 +55,17 @@ public:
 	virtual void useSkill() = 0;
 
 	// legacy : virtual 함수로 useskill 불렀던 것, TODO: dynamic cast를 skill name 때 쓰고, 기본으로 useskill 호출하기?
-	// virtual bool useSkill(Character& target, int dmg, int logIdx, CharacterManager::LogData& outResult) = 0;
+	// virtual bool useSkill(Character& target, int dmg, CharacterManager::LogData& outResult) = 0;
 
 protected:
 	bool bIsAlive;
 	std::mutex m_mtx;
 
-	bool executeSkill(Character& target, int dmg, int logIdx, CharacterManager::LogData& outResult)
+	bool executeSkill(Character& target, int dmg, CharacterManager::LogData& outResult)
 	{
-		if (!bIsAlive) return true;
+		if (!bIsAlive) return false;
 		
-		DamageResult res = target.takeDamage(dmg, logIdx);
+		DamageResult res = target.takeDamage(dmg);
 
 		// miss일 경우 로그 안 남기고 재시도
 		if (res == DamageResult::Missed) { return false; }
@@ -92,16 +77,7 @@ protected:
 		outResult.targetHp = target.hp;
 		outResult.result = res;
 
-		// 객체에 공격한 로그 인덱스 기록 // TODO: 공격, 피해 로그 분리
-		addLogIndex(logIdx);
-		target.addLogIndex(logIdx);
-
 		return true;
 	}
 
-	void addLogIndex(int idx)
-	{
-		std::lock_guard<std::mutex> lock(m_mtx);
-		LogIndex.push_back(idx);
-	}
 };
