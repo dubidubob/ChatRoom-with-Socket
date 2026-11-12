@@ -18,7 +18,7 @@
 #include "CharacterManager.h"
 
 int g_testNum = 1000;
-void SetTargetAndDamage(Character* attacker, CharacterManager* manager, uint32_t randSeed, int logIdx, CharacterManager::LogData& outResult)
+void SetTargetAndDamage(Character* attacker, CharacterManager* manager, uint32_t randSeed)
 {
     if (!attacker->isAlive()) return;
 
@@ -71,21 +71,20 @@ void SetTargetAndDamage(Character* attacker, CharacterManager* manager, uint32_t
             }*/
             if (Mage* mage = dynamic_cast<Mage*>(attacker))
             {
-                if(mage->castSpell(*target, finalDamage, logIdx, localLog)) break;
+                if (mage->castSpell(*target, finalDamage, localLog)) { manager->printLog(localLog); break; }
             }
             else if (Warrior* warrior = dynamic_cast<Warrior*>(attacker))
             {
-                if (warrior->swingSword(*target, finalDamage, logIdx, localLog)) break;
+                if (warrior->swingSword(*target, finalDamage, localLog)) { manager->printLog(localLog); break; }
             }
             else if (Archer* archer = dynamic_cast<Archer*>(attacker))
             {
-                if(archer->shootArrow(*target, finalDamage, logIdx, localLog)) break;
+                if (archer->shootArrow(*target, finalDamage, localLog)) { manager->printLog(localLog); break; }
             }
         }
     }
 
-    std::lock_guard<std::mutex> lock(manager->getLogMutex());
-    outResult = std::move(localLog);
+
 }
 
 void Quest4()
@@ -117,7 +116,6 @@ void Quest4()
 
         std::mt19937 masterEngine(masterSeed);
 
-        manager.beginTurn(curAliveNum);
         manager.m_currentTurn++;
 
         for (int i = 0; i < curAliveNum; i++)
@@ -127,10 +125,8 @@ void Quest4()
             {
                 uint32_t workerSeed = masterEngine();
 
-                std::string tmpLog;
-                // attackersLog에 mutex를 걸어 대입하여 heap manager를 호출하게 될 때는 원자성 보호
                 attackers.push_back(std::make_unique<std::thread>(SetTargetAndDamage,
-                    attacker, &manager, workerSeed, i, std::ref(manager.getLogData(i)))); // 위 resize를 통해 재할당 안 일어나게 방지됨, 참조 무효화 가능성 없음
+                    attacker, &manager, workerSeed));
             }
         }
 
@@ -142,7 +138,6 @@ void Quest4()
             }
         }
 
-        manager.printTurnLog(manager.m_currentTurn);
         manager.removeDeadCharacters();
         std::cout << "==================="<< manager.m_currentTurn <<"턴 완료. 남은 사람 수 : " << manager.getAliveCount() << "\n";
     }
