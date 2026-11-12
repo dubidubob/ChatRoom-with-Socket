@@ -48,37 +48,9 @@ void CharacterManager::removeDeadCharacters()
 	}
 }
 
-int CharacterManager::pushLog(LogData&& log)
+void CharacterManager::printLog(const LogData& log)
 {
 	std::lock_guard<std::mutex> lock(g_logMutex);
-	int idx = m_centerLog.size();
-	m_centerLog.push_back(std::move(log));
-
-	return idx;
-}
-
-
-void CharacterManager::printTurnLog(int turnIdx) const
-{
-	if (turnIdx <= 0 || turnIdx > (int)m_turnOffsets.size()) return;
-
-	int start = m_turnOffsets[turnIdx - 1];
-	int end = (turnIdx < (int)m_turnOffsets.size())
-		? m_turnOffsets[turnIdx]   // 다음 턴 시작이 이번 턴 끝
-		: (int)m_centerLog.size(); // 마지막 턴은 현재 끝까지
-
-	for (int i = start; i < end; i++)
-	{
-		printSingleLog(i);
-	}
-}
-
-void CharacterManager::printSingleLog(int idx) const
-{
-	if (idx < 0 || idx >= (int)m_centerLog.size()) return;
-
-	const LogData& log = m_centerLog[idx];
-
 	std::cout << log.attackerId << " → " << log.targetId
 		<< " | 스킬: " << (int)log.skill
 		<< " | 데미지: " << log.damage
