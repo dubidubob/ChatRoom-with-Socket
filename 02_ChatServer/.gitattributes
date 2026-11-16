@@ -1,0 +1,13 @@
+* text=auto
+
+*.h text eol=crlf
+*.cpp text eol=crlf
+*.txt text eol=crlf
+*.md text eol=crlf
+*.vcxproj text eol=crlf
+*.filters text eol=crlf
+*.slnx text eol=crlf
+CMakeLists.txt text eol=crlf
+.clang-format text eol=crlf
+.editorconfig text eol=crlf
+

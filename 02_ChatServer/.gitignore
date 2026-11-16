@@ -1,0 +1,58 @@
+# Visual Studio 임시 및 로컬 설정 폴더
+.vs/
+
+# 빌드 출력 디렉토리 (x64, x86, Debug, Release 등)
+[Xx]64/
+[Xx]86/
+Debug/
+Release/
+
+# 특정 빌드 로그 및 상태 파일
+*.log
+*.tlog/
+*.lastbuildstate
+*.unsuccessfulbuild
+
+# 컴파일러 생성 파일 (디버그 데이터베이스, 증분 빌드 파일 등)
+*.pdb
+*.idb
+*.ipch/
+*.res
+*.obj
+*.exe
+*.ilk
+
+# Visual Studio 프로젝트 사용자 설정
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+
+# 기타 캐시 및 인덱스
+*.vsidx
+*.VC.db
+*.VC.opendb
+*.db-wal
+*.db-shm
+
+# Build artifacts
+Binaries/
+Build/
+Intermediate/
+DerivedDataCache/
+
+# Saved directory
+Saved/
+
+# Other
+*.pdb
+*.VC.db
+*.opendb
+*.sdf
+*~
+*.bak
+*.tmp
+*.log
